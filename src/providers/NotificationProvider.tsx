@@ -11,7 +11,7 @@ import { Reminder } from '../types/Reminder'
 export interface NotificationContext {
   addReminder: (reminder: Omit<Reminder, 'id'>) => void
   reminders: Reminder[]
-  // deleteReminder: () => void
+  deleteReminder: (id: number) => void
   // updateReminder: () => void
   // editingId: number
   // setEditingId: () => void
@@ -45,12 +45,20 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     [nextId, reminders],
   )
 
+  const deleteReminder = useCallback(
+    (id: number) => {
+      const newReminders = reminders.filter((r) => r.id !== id)
+      setReminders(newReminders)
+    },
+    [reminders],
+  )
+
   console.log('PROVIDER', reminders)
   const value: NotificationContext = useMemo(
     () => ({
       reminders,
       addReminder,
-      // deleteReminder,
+      deleteReminder,
       // updateReminder,
       // editingId,
       // setEditingId,
@@ -58,7 +66,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     [
       reminders,
       addReminder,
-      // deleteReminder,
+      deleteReminder,
       // updateReminder,
       // editingId,
       // setEditingId,

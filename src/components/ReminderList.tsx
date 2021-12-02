@@ -15,17 +15,21 @@ export interface ReminderListProps {}
 
 export const ReminderList = ({}: ReminderListProps) => {
   const classes = useStyles()
-  const { reminders } = useNotification()
+  const { reminders, deleteReminder } = useNotification()
 
   console.log('LIST', reminders)
 
   return (
     <List sx={{ width: '80%' }}>
       {reminders.length === 0 ? (
-        <ListItemText primary={`do somsing`} />
+        <ListItemText
+          primary={`make me disappear...by adding something duh.`}
+        />
       ) : (
         reminders.map((reminder) => {
-          return <ReminderCard reminder={reminder} />
+          return (
+            <ReminderCard reminder={reminder} deleteReminder={deleteReminder} />
+          )
         })
       )}
     </List>

@@ -18,9 +18,13 @@ const useStyles = makeStyles(
 
 export interface ReminderCardProps {
   reminder: Reminder
+  deleteReminder: (id: number) => void
 }
 
-export const ReminderCard = ({ reminder }: ReminderCardProps) => {
+export const ReminderCard = ({
+  reminder,
+  deleteReminder,
+}: ReminderCardProps) => {
   const classes = useStyles()
   const [checked, setChecked] = useState([0])
 
@@ -37,6 +41,10 @@ export const ReminderCard = ({ reminder }: ReminderCardProps) => {
     setChecked(newChecked)
   }
 
+  const removeReminder = () => {
+    deleteReminder(reminder.id)
+  }
+
   return (
     <ListItem
       secondaryAction={
@@ -44,7 +52,7 @@ export const ReminderCard = ({ reminder }: ReminderCardProps) => {
           <IconButton edge="end" aria-label="Edit">
             <Edit color="primary" />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={removeReminder}>
             <Delete color="error" fontSize="large" />
           </IconButton>
         </>
