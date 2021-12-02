@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles'
 import { IconButton, TextField } from '@mui/material'
 import TimeDatePick from './TimeDatePick'
 import { AddAlert } from '@mui/icons-material'
+import { useNotification } from '../providers/NotificationProvider'
 
 const useStyles = makeStyles(
   (theme) => ({
@@ -27,8 +28,24 @@ export interface AddItemProps {}
 export const AddItem = ({}: AddItemProps) => {
   const classes = useStyles()
 
+  const { addReminder } = useNotification()
+
   const [text, setText] = useState<string>('')
   const [date, setDate] = useState<Date | null>(null)
+
+  const addItem = () => {
+    if (!date || text.trim() === '') {
+      return
+    }
+    addReminder({
+      date,
+      text,
+      done: false,
+      notified: false,
+    })
+    setText('')
+    setDate(null)
+  }
 
   return (
     <div className={classes.root}>
@@ -40,11 +57,10 @@ export const AddItem = ({}: AddItemProps) => {
         value={text}
         onChange={(e) => {
           setText(e.target.value)
-          console.log(text)
         }}
       />
       <TimeDatePick date={date} setDate={setDate} />
-      <IconButton>
+      <IconButton onClick={addItem}>
         <AddAlert color="primary" fontSize="large" />
       </IconButton>
     </div>

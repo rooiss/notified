@@ -6,7 +6,8 @@ import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import { makeStyles } from '@mui/styles'
-import { Edit } from '@mui/icons-material'
+import { Delete, Edit } from '@mui/icons-material'
+import { Reminder } from '../types/Reminder'
 
 const useStyles = makeStyles(
   (theme) => ({
@@ -15,9 +16,11 @@ const useStyles = makeStyles(
   { name: 'ReminderCard' },
 )
 
-export interface ReminderCardProps {}
+export interface ReminderCardProps {
+  reminders: Reminder[]
+}
 
-export const ReminderCard = ({}: ReminderCardProps) => {
+export const ReminderCard = ({ reminders }: ReminderCardProps) => {
   const classes = useStyles()
   const [checked, setChecked] = useState([0])
 
@@ -35,27 +38,38 @@ export const ReminderCard = ({}: ReminderCardProps) => {
   }
 
   return (
-    <List sx={{ width: '80%', bgcolor: 'background.paper' }}>
-      <ListItem
-        secondaryAction={
-          <IconButton edge="end" aria-label="Edit">
-            <Edit />
-          </IconButton>
-        }
-        disablePadding
-      >
-        <ListItemIcon>
-          <Checkbox
-            edge="start"
-            // checked={checked.indexOf(value) !== -1}
-            // tabIndex={-1}
-            // disableRipple
-          />
-        </ListItemIcon>
-        <ListItemText
-          primary={`Finish this projectFinish this projectFinish this projectFinish this project`}
-        />
-      </ListItem>
+    <List sx={{ width: '80%' }}>
+      {reminders ? (
+        reminders.map((r) => {
+          return (
+            <ListItem
+              secondaryAction={
+                <>
+                  <IconButton edge="end" aria-label="Edit">
+                    <Edit color="primary" />
+                  </IconButton>
+                  <IconButton>
+                    <Delete color="error" fontSize="large" />
+                  </IconButton>
+                </>
+              }
+              disablePadding
+            >
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  // checked={checked.indexOf(value) !== -1}
+                  // tabIndex={-1}
+                  // disableRipple
+                />
+              </ListItemIcon>
+              <ListItemText primary={r.text} />
+            </ListItem>
+          )
+        })
+      ) : (
+        <ListItemText primary={`do somsing`} />
+      )}
     </List>
   )
 }

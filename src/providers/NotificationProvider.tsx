@@ -1,57 +1,73 @@
-// import React, {
-//   createContext,
-//   ReactNode,
-//   useCallback,
-//   useContext,
-//   useMemo,
-//   useState,
-// } from 'react'
-// import { Reminder } from '../types/Reminder'
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react'
+import { Reminder } from '../types/Reminder'
 
-// export interface NotificationContext {
-//   addReminder: () => void
-//   deleteReminder: () => void
-//   updateReminder: () => void
-//   reminders: Reminder[]
-//   editingId: number
-//   setEditingId: () => void
-// }
+export interface NotificationContext {
+  addReminder: (reminder: Omit<Reminder, 'id'>) => void
+  reminders: Reminder[]
+  // deleteReminder: () => void
+  // updateReminder: () => void
+  // editingId: number
+  // setEditingId: () => void
+  // nextId: number
+}
 
-// const notificationContext = createContext<NotificationContext>(
-//   {} as NotificationContext,
-// )
+const notificationContext = createContext<NotificationContext>(
+  {} as NotificationContext,
+)
 
-// export const NotificationProvider = ({ children }: { children: ReactNode }) => {
-//   const [reminders, setReminders] = useState([])
+const sortReminders = (a: Reminder, b: Reminder) => {
+  return a.date.valueOf() - b.date.valueOf()
+}
 
-//   const addReminder = useCallback(({reminder}: {reminder: Reminder}) => {
+export const NotificationProvider = ({ children }: { children: ReactNode }) => {
+  const [reminders, setReminders] = useState<Reminder[]>([])
+  const [nextId, setNextId] = useState(1)
 
-//   },[])
+  const addReminder = useCallback(
+    (reminder: Omit<Reminder, 'id'>) => {
+      const newReminders = reminders
+        .concat({
+          id: nextId,
+          ...reminder,
+        })
+        .sort(sortReminders)
+      setReminders(newReminders)
+      setNextId(nextId + 1)
+      console.log(reminders)
+    },
+    [nextId, reminders],
+  )
 
-//   const value: NotificationContext = useMemo(
-//     () => ({
-//       reminders,
-//       addReminder,
-//       deleteReminder,
-//       updateReminder,
-//       editingId,
-//       setEditingId,
-//     }),
-//     [
-//       reminders,
-//       addReminder,
-//       deleteReminder,
-//       updateReminder,
-//       editingId,
-//       setEditingId,
-//     ],
-//   )
-//   return (
-//     <notificationContext.Provider value={value}>
-//       {children}
-//     </notificationContext.Provider>
-//   )
-// }
+  const value: NotificationContext = useMemo(
+    () => ({
+      reminders,
+      addReminder,
+      // deleteReminder,
+      // updateReminder,
+      // editingId,
+      // setEditingId,
+    }),
+    [
+      reminders,
+      addReminder,
+      // deleteReminder,
+      // updateReminder,
+      // editingId,
+      // setEditingId,
+    ],
+  )
+  return (
+    <notificationContext.Provider value={value}>
+      {children}
+    </notificationContext.Provider>
+  )
+}
 
-// export const useNotifications = () => useContext(notificationContext)
-export {}
+export const useNotification = () => useContext(notificationContext)

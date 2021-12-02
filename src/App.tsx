@@ -4,6 +4,10 @@ import './App.css'
 import { AddItem } from './components/AddItem'
 import { ReminderCard } from './components/ReminderCard'
 import { makeStyles } from '@mui/styles'
+import {
+  NotificationProvider,
+  useNotification,
+} from './providers/NotificationProvider'
 
 const useStyles = makeStyles(
   (theme) => ({
@@ -22,18 +26,21 @@ const useStyles = makeStyles(
 
 function App() {
   const classes = useStyles()
+
+  const { reminders } = useNotification()
+
   return (
-    <Container>
-      <Paper className={classes.root}>
-        <Typography variant="h2" className={classes.headerText}>
-          Notified.
-        </Typography>
-        <AddItem />
-        <ReminderCard />
-        <ReminderCard />
-        <ReminderCard />
-      </Paper>
-    </Container>
+    <NotificationProvider>
+      <Container>
+        <Paper className={classes.root}>
+          <Typography variant="h2" className={classes.headerText}>
+            Notified.
+          </Typography>
+          <AddItem />
+          <ReminderCard reminders={reminders} />
+        </Paper>
+      </Container>
+    </NotificationProvider>
   )
 }
 
