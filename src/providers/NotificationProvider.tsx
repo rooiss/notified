@@ -45,6 +45,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     [nextId, reminders],
   )
 
+  console.log('PROVIDER', reminders)
   const value: NotificationContext = useMemo(
     () => ({
       reminders,

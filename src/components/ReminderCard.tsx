@@ -17,10 +17,10 @@ const useStyles = makeStyles(
 )
 
 export interface ReminderCardProps {
-  reminders: Reminder[]
+  reminder: Reminder
 }
 
-export const ReminderCard = ({ reminders }: ReminderCardProps) => {
+export const ReminderCard = ({ reminder }: ReminderCardProps) => {
   const classes = useStyles()
   const [checked, setChecked] = useState([0])
 
@@ -38,38 +38,28 @@ export const ReminderCard = ({ reminders }: ReminderCardProps) => {
   }
 
   return (
-    <List sx={{ width: '80%' }}>
-      {reminders ? (
-        reminders.map((r) => {
-          return (
-            <ListItem
-              secondaryAction={
-                <>
-                  <IconButton edge="end" aria-label="Edit">
-                    <Edit color="primary" />
-                  </IconButton>
-                  <IconButton>
-                    <Delete color="error" fontSize="large" />
-                  </IconButton>
-                </>
-              }
-              disablePadding
-            >
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  // checked={checked.indexOf(value) !== -1}
-                  // tabIndex={-1}
-                  // disableRipple
-                />
-              </ListItemIcon>
-              <ListItemText primary={r.text} />
-            </ListItem>
-          )
-        })
-      ) : (
-        <ListItemText primary={`do somsing`} />
-      )}
-    </List>
+    <ListItem
+      secondaryAction={
+        <>
+          <IconButton edge="end" aria-label="Edit">
+            <Edit color="primary" />
+          </IconButton>
+          <IconButton>
+            <Delete color="error" fontSize="large" />
+          </IconButton>
+        </>
+      }
+      disablePadding
+    >
+      <ListItemIcon>
+        <Checkbox
+          edge="start"
+          // checked={checked.indexOf(value) !== -1}
+          // tabIndex={-1}
+          // disableRipple
+        />
+      </ListItemIcon>
+      <ListItemText primary={reminder.text} />
+    </ListItem>
   )
 }

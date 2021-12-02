@@ -8,6 +8,7 @@ import {
   NotificationProvider,
   useNotification,
 } from './providers/NotificationProvider'
+import { ReminderList } from './components/ReminderList'
 
 const useStyles = makeStyles(
   (theme) => ({
@@ -26,9 +27,6 @@ const useStyles = makeStyles(
 
 function App() {
   const classes = useStyles()
-
-  const { reminders } = useNotification()
-
   return (
     <NotificationProvider>
       <Container>
@@ -37,7 +35,7 @@ function App() {
             Notified.
           </Typography>
           <AddItem />
-          <ReminderCard reminders={reminders} />
+          <ReminderList />
         </Paper>
       </Container>
     </NotificationProvider>
