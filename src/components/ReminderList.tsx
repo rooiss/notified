@@ -15,7 +15,13 @@ export interface ReminderListProps {}
 
 export const ReminderList = ({}: ReminderListProps) => {
   const classes = useStyles()
-  const { reminders, deleteReminder } = useNotification()
+  const {
+    reminders,
+    deleteReminder,
+    editingId,
+    setEditingId,
+    updateReminder,
+  } = useNotification()
 
   console.log('LIST', reminders)
 
@@ -28,7 +34,14 @@ export const ReminderList = ({}: ReminderListProps) => {
       ) : (
         reminders.map((reminder) => {
           return (
-            <ReminderCard reminder={reminder} deleteReminder={deleteReminder} />
+            <ReminderCard
+              reminder={reminder}
+              deleteReminder={deleteReminder}
+              setEditingId={setEditingId}
+              editingId={editingId}
+              editing={editingId === reminder.id}
+              updateReminder={updateReminder}
+            />
           )
         })
       )}

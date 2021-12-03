@@ -12,9 +12,9 @@ export interface NotificationContext {
   addReminder: (reminder: Omit<Reminder, 'id'>) => void
   reminders: Reminder[]
   deleteReminder: (id: number) => void
-  // updateReminder: () => void
-  // editingId: number
-  // setEditingId: () => void
+  updateReminder: (reminder: Reminder) => void
+  editingId: number | null
+  setEditingId: (id: number | null) => void
   // nextId: number
 }
 
@@ -29,6 +29,7 @@ const sortReminders = (a: Reminder, b: Reminder) => {
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   const [reminders, setReminders] = useState<Reminder[]>([])
   const [nextId, setNextId] = useState(1)
+  const [editingId, setEditingId] = useState<number | null>(null)
 
   const addReminder = useCallback(
     (reminder: Omit<Reminder, 'id'>) => {
@@ -53,23 +54,40 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     [reminders],
   )
 
-  console.log('PROVIDER', reminders)
+  const updateReminder = useCallback(
+    (reminder: Reminder) => {
+      const newReminders = reminders
+        .map((r) => {
+          if (r.id !== reminder.id) {
+            return r
+          }
+          return {
+            ...r,
+            ...reminder,
+          }
+        })
+        .sort(sortReminders)
+      setReminders(newReminders)
+    },
+    [reminders],
+  )
+
   const value: NotificationContext = useMemo(
     () => ({
       reminders,
       addReminder,
       deleteReminder,
-      // updateReminder,
-      // editingId,
-      // setEditingId,
+      updateReminder,
+      editingId,
+      setEditingId,
     }),
     [
       reminders,
       addReminder,
       deleteReminder,
-      // updateReminder,
-      // editingId,
-      // setEditingId,
+      updateReminder,
+      editingId,
+      setEditingId,
     ],
   )
   return (

@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import { makeStyles } from '@mui/styles'
-import { Delete, Edit } from '@mui/icons-material'
+import { Cancel, Check, Delete, Edit } from '@mui/icons-material'
 import { Reminder } from '../types/Reminder'
+import { TextField } from '@mui/material'
+import TimeDatePick from './TimeDatePick'
+import { timeAgo } from '../util/timeConvert'
 
 const useStyles = makeStyles(
   (theme) => ({
@@ -19,14 +21,25 @@ const useStyles = makeStyles(
 export interface ReminderCardProps {
   reminder: Reminder
   deleteReminder: (id: number) => void
+  setEditingId: (id: number | null) => void
+  editingId: number | null
+  editing: boolean
+  updateReminder: (reminder: Reminder) => void
 }
 
 export const ReminderCard = ({
   reminder,
   deleteReminder,
+  setEditingId,
+  editingId,
+  editing,
+  updateReminder,
 }: ReminderCardProps) => {
   const classes = useStyles()
   const [checked, setChecked] = useState([0])
+
+  const [editText, setEditText] = useState<string>(reminder.text)
+  const [editDate, setEditDate] = useState<Date>(reminder.date)
 
   const handleToggle = (value: number) => () => {
     const currentIndex = checked.indexOf(value)
@@ -45,16 +58,46 @@ export const ReminderCard = ({
     deleteReminder(reminder.id)
   }
 
+  const toggleEdit = () => {
+    if (editing) {
+      setEditingId(null)
+      return
+    }
+    setEditingId(reminder.id)
+  }
+
+  const confirmEdit = () => {
+    updateReminder({
+      ...reminder,
+      text: editText,
+      date: editDate,
+    })
+    setEditingId(null)
+  }
+
   return (
     <ListItem
       secondaryAction={
         <>
-          <IconButton edge="end" aria-label="Edit">
-            <Edit color="primary" />
-          </IconButton>
-          <IconButton onClick={removeReminder}>
-            <Delete color="error" fontSize="large" />
-          </IconButton>
+          {editing ? (
+            <>
+              <IconButton edge="end" aria-label="Edit" onClick={confirmEdit}>
+                <Check color="success" />
+              </IconButton>
+              <IconButton onClick={toggleEdit}>
+                <Cancel color="warning" fontSize="large" />
+              </IconButton>
+            </>
+          ) : (
+            <>
+              <IconButton edge="end" aria-label="Edit" onClick={toggleEdit}>
+                <Edit color="primary" />
+              </IconButton>
+              <IconButton onClick={removeReminder}>
+                <Delete color="error" fontSize="large" />
+              </IconButton>
+            </>
+          )}
         </>
       }
       disablePadding
@@ -67,7 +110,26 @@ export const ReminderCard = ({
           // disableRipple
         />
       </ListItemIcon>
-      <ListItemText primary={reminder.text} />
+      {editing ? (
+        <>
+          <TextField
+            id="outlined-basic"
+            label="wash hands, cough, spread disease, etc..."
+            variant="outlined"
+            // className={classes.text}
+            value={editText}
+            onChange={(e) => {
+              setEditText(e.target.value)
+            }}
+          />
+          <TimeDatePick date={editDate} setDate={setEditDate} />
+        </>
+      ) : (
+        <ListItemText
+          primary={reminder.text}
+          secondary={timeAgo.format(reminder.date)}
+        />
+      )}
     </ListItem>
   )
 }
