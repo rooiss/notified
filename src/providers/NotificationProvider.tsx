@@ -3,6 +3,7 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -15,7 +16,6 @@ export interface NotificationContext {
   updateReminder: (reminder: Reminder) => void
   editingId: number | null
   setEditingId: (id: number | null) => void
-  // nextId: number
 }
 
 const notificationContext = createContext<NotificationContext>(
@@ -41,7 +41,8 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
         .sort(sortReminders)
       setReminders(newReminders)
       setNextId(nextId + 1)
-      console.log(reminders)
+      localStorage.setItem('localReminders', JSON.stringify(newReminders))
+      localStorage.setItem('nextId', JSON.stringify(nextId + 1))
     },
     [nextId, reminders],
   )
@@ -50,6 +51,10 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     (id: number) => {
       const newReminders = reminders.filter((r) => r.id !== id)
       setReminders(newReminders)
+      localStorage.setItem('localReminders', JSON.stringify(newReminders))
+      const newNextId = newReminders.length
+      setNextId(newNextId)
+      localStorage.setItem('nextId', JSON.stringify(newNextId))
     },
     [reminders],
   )
@@ -68,9 +73,30 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
         })
         .sort(sortReminders)
       setReminders(newReminders)
+      localStorage.setItem('localReminders', JSON.stringify(newReminders))
     },
     [reminders],
   )
+
+  useEffect(() => {
+    // retrieve reminders on page refresh
+    try {
+      const localReminders = localStorage.getItem('localReminders')
+      const localNextId = localStorage.getItem('nextId')
+      if (localReminders !== null && localNextId !== null) {
+        const newReminders = JSON.parse(localReminders)
+        newReminders.forEach((r: any) => {
+          const newDate = new Date(r.date)
+          r.date = newDate
+        })
+        setReminders(newReminders)
+        setNextId(Number(localNextId))
+        // update the nextId since on page reload the id will become 1 by default
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }, [])
 
   const value: NotificationContext = useMemo(
     () => ({

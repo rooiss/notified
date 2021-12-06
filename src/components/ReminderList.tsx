@@ -23,7 +23,7 @@ export const ReminderList = ({}: ReminderListProps) => {
     updateReminder,
   } = useNotification()
 
-  console.log('LIST', reminders)
+  // console.log('LIST', reminders)
 
   return (
     <List sx={{ width: '80%' }}>
@@ -35,10 +35,10 @@ export const ReminderList = ({}: ReminderListProps) => {
         reminders.map((reminder) => {
           return (
             <ReminderCard
+              key={reminder.id}
               reminder={reminder}
               deleteReminder={deleteReminder}
               setEditingId={setEditingId}
-              editingId={editingId}
               editing={editingId === reminder.id}
               updateReminder={updateReminder}
             />

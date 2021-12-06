@@ -14,6 +14,9 @@ import { timeAgo } from '../util/timeConvert'
 const useStyles = makeStyles(
   (theme) => ({
     root: {},
+    editItem: {
+      width: '80%',
+    },
   }),
   { name: 'ReminderCard' },
 )
@@ -22,7 +25,6 @@ export interface ReminderCardProps {
   reminder: Reminder
   deleteReminder: (id: number) => void
   setEditingId: (id: number | null) => void
-  editingId: number | null
   editing: boolean
   updateReminder: (reminder: Reminder) => void
 }
@@ -31,28 +33,27 @@ export const ReminderCard = ({
   reminder,
   deleteReminder,
   setEditingId,
-  editingId,
   editing,
   updateReminder,
 }: ReminderCardProps) => {
   const classes = useStyles()
-  const [checked, setChecked] = useState([0])
+  // const [checked, setChecked] = useState([0])
 
   const [editText, setEditText] = useState<string>(reminder.text)
   const [editDate, setEditDate] = useState<Date>(reminder.date)
 
-  const handleToggle = (value: number) => () => {
-    const currentIndex = checked.indexOf(value)
-    const newChecked = [...checked]
+  // const handleToggle = (value: number) => () => {
+  //   const currentIndex = checked.indexOf(value)
+  //   const newChecked = [...checked]
 
-    if (currentIndex === -1) {
-      newChecked.push(value)
-    } else {
-      newChecked.splice(currentIndex, 1)
-    }
+  //   if (currentIndex === -1) {
+  //     newChecked.push(value)
+  //   } else {
+  //     newChecked.splice(currentIndex, 1)
+  //   }
 
-    setChecked(newChecked)
-  }
+  //   setChecked(newChecked)
+  // }
 
   const removeReminder = () => {
     deleteReminder(reminder.id)
@@ -74,7 +75,6 @@ export const ReminderCard = ({
     })
     setEditingId(null)
   }
-
   return (
     <ListItem
       secondaryAction={
@@ -111,7 +111,7 @@ export const ReminderCard = ({
         />
       </ListItemIcon>
       {editing ? (
-        <>
+        <div className={classes.editItem}>
           <TextField
             id="outlined-basic"
             label="wash hands, cough, spread disease, etc..."
@@ -123,7 +123,7 @@ export const ReminderCard = ({
             }}
           />
           <TimeDatePick date={editDate} setDate={setEditDate} />
-        </>
+        </div>
       ) : (
         <ListItemText
           primary={reminder.text}

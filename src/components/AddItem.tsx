@@ -23,9 +23,7 @@ const useStyles = makeStyles(
   { name: 'AddItem' },
 )
 
-export interface AddItemProps {}
-
-export const AddItem = ({}: AddItemProps) => {
+export const AddItem = () => {
   const classes = useStyles()
 
   const { addReminder } = useNotification()
