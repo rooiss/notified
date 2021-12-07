@@ -34,6 +34,7 @@ export interface ReminderCardProps {
   updateReminder: (reminder: Reminder) => void
 }
 
+// blah 
 export const ReminderCard = ({
   reminder,
   deleteReminder,
