@@ -91,12 +91,49 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
         })
         setReminders(newReminders)
         setNextId(Number(localNextId))
-        // update the nextId since on page reload the id will become 1 by default
+      }
+      if (!('Notification' in window)) {
+        alert('This browser does not support desktop notification')
+      }
+
+      // Let's check whether notification permissions have already been granted
+      else if (Notification.permission === 'granted') {
+        // If it's okay let's create a notification
+        new Notification('Hi there!')
+      }
+
+      // Otherwise, we need to ask the user for permission
+      else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(function (permission) {
+          // If the user accepts, let's create a notification
+          if (permission === 'granted') {
+            new Notification('Hi there!')
+          }
+        })
       }
     } catch (e) {
       console.log(e)
     }
   }, [])
+
+  useEffect(() => {
+    // check reminders to see if the date has overlapped
+    // if overlapped then notify and change notified to true
+    // use the intervals to check every 5 seconds to see if date has changed
+    // return a cleanup function
+    const intervalId = setInterval(() => {
+      reminders.forEach((r) => {
+        console.log('INTERVALS BEING SET')
+        if (r.date.valueOf() < Date.now().valueOf() && r.notified === false) {
+          new Notification(`Reminder: ${r.text} is due`)
+          updateReminder({ ...r, notified: true })
+        }
+      })
+    }, 5000)
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [reminders, updateReminder])
 
   const value: NotificationContext = useMemo(
     () => ({

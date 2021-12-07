@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import ListItem from '@mui/material/ListItem'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
@@ -15,7 +15,12 @@ const useStyles = makeStyles(
   (theme) => ({
     root: {},
     editItem: {
+      display: 'flex',
+      justifyContent: 'space-evenly',
       width: '80%',
+    },
+    done: {
+      textDecoration: 'line-through',
     },
   }),
   { name: 'ReminderCard' },
@@ -37,23 +42,16 @@ export const ReminderCard = ({
   updateReminder,
 }: ReminderCardProps) => {
   const classes = useStyles()
-  // const [checked, setChecked] = useState([0])
 
   const [editText, setEditText] = useState<string>(reminder.text)
   const [editDate, setEditDate] = useState<Date>(reminder.date)
 
-  // const handleToggle = (value: number) => () => {
-  //   const currentIndex = checked.indexOf(value)
-  //   const newChecked = [...checked]
-
-  //   if (currentIndex === -1) {
-  //     newChecked.push(value)
-  //   } else {
-  //     newChecked.splice(currentIndex, 1)
-  //   }
-
-  //   setChecked(newChecked)
-  // }
+  const handleDone = useCallback(() => {
+    updateReminder({
+      ...reminder,
+      done: !reminder.done,
+    })
+  }, [reminder, updateReminder])
 
   const removeReminder = () => {
     deleteReminder(reminder.id)
@@ -103,27 +101,28 @@ export const ReminderCard = ({
       disablePadding
     >
       <ListItemIcon>
-        <Checkbox
-          edge="start"
-          // checked={checked.indexOf(value) !== -1}
-          // tabIndex={-1}
-          // disableRipple
-        />
+        <Checkbox edge="start" checked={reminder.done} onClick={handleDone} />
       </ListItemIcon>
       {editing ? (
         <div className={classes.editItem}>
           <TextField
             id="outlined-basic"
-            label="wash hands, cough, spread disease, etc..."
+            label={reminder.text}
             variant="outlined"
-            // className={classes.text}
             value={editText}
             onChange={(e) => {
               setEditText(e.target.value)
             }}
+            sx={{ width: '70%', paddingRight: '32px' }}
           />
           <TimeDatePick date={editDate} setDate={setEditDate} />
         </div>
+      ) : reminder.done ? (
+        <ListItemText
+          className={classes.done}
+          primary={reminder.text}
+          secondary={timeAgo.format(reminder.date)}
+        />
       ) : (
         <ListItemText
           primary={reminder.text}
