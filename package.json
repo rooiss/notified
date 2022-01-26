@@ -2,10 +2,6 @@
   "name": "notified-v2",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "14.2.0",
-    "npm": "6.14.5"
-  },
   "dependencies": {
     "@emotion/react": "^11.7.0",
     "@emotion/styled": "^11.6.0",
@@ -30,9 +26,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run cp:nginx",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cp:nginx": "rm -rf build/nginx && mkdir build/nginx && cp nginx/notified.gq.conf build/nginx/"
   },
   "eslintConfig": {
     "extends": [

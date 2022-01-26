@@ -15,9 +15,7 @@ export const ReminderList = () => {
   return (
     <List sx={{ width: '80%' }}>
       {reminders.length === 0 ? (
-        <ListItemText
-          primary={`make me disappear...by adding something duh.`}
-        />
+        <ListItemText primary={`Add something to start!`} />
       ) : (
         reminders.map((reminder) => {
           return (

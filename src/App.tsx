@@ -2,12 +2,8 @@ import { Container, Paper, Typography } from '@mui/material'
 import React from 'react'
 import './App.css'
 import { AddItem } from './components/AddItem'
-import { ReminderCard } from './components/ReminderCard'
 import { makeStyles } from '@mui/styles'
-import {
-  NotificationProvider,
-  useNotification,
-} from './providers/NotificationProvider'
+import { NotificationProvider } from './providers/NotificationProvider'
 import { ReminderList } from './components/ReminderList'
 
 const useStyles = makeStyles(

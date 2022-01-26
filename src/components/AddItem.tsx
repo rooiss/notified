@@ -49,7 +49,7 @@ export const AddItem = () => {
     <div className={classes.root}>
       <TextField
         id="outlined-basic"
-        label="wash hands, cough, spread disease, etc..."
+        label="prep veggies, blanch bones for broth, prep toppings..."
         variant="outlined"
         className={classes.text}
         value={text}
